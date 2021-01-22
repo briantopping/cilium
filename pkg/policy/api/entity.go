@@ -17,6 +17,7 @@ package api
 import (
 	k8sapi "github.com/cilium/cilium/pkg/k8s/apis/cilium.io"
 	"github.com/cilium/cilium/pkg/labels"
+	"net"
 )
 
 // Entity specifies the class of receiver/sender endpoints that do not have
@@ -113,7 +114,7 @@ func (s EntitySlice) GetAsEndpointSelectors() EndpointSelectorSlice {
 }
 
 // InitEntities is called to initialize the policy API layer
-func InitEntities(clusterName string, treatRemoteNodeAsHost bool) {
+func InitEntities(clusterName string, treatRemoteNodeAsHost bool, addr net.IP) {
 	EntitySelectorMapping[EntityCluster] = EndpointSelectorSlice{
 		endpointSelectorHost,
 		endpointSelectorRemoteNode,
@@ -128,5 +129,6 @@ func InitEntities(clusterName string, treatRemoteNodeAsHost bool) {
 	if treatRemoteNodeAsHost {
 		hostSelectors = append(hostSelectors, endpointSelectorRemoteNode)
 	}
+	hostSelectors = append(hostSelectors, NewESFromLabels(labels.ParseLabel(labels.LabelSourceCIDR + ":" + addr.String() + "/32")))
 	EntitySelectorMapping[EntityHost] = hostSelectors
 }

@@ -36,7 +36,7 @@ func (s EntitySlice) matches(ctx labels.LabelArray) bool {
 }
 
 func (s *PolicyAPITestSuite) TestEntityMatches(c *C) {
-	InitEntities("cluster1", false)
+	InitEntities("cluster1", false, nil)
 
 	c.Assert(EntityHost.matches(labels.ParseLabelArray("reserved:host")), Equals, true)
 	c.Assert(EntityHost.matches(labels.ParseLabelArray("reserved:host", "id:foo")), Equals, true)
@@ -84,7 +84,7 @@ func (s *PolicyAPITestSuite) TestEntityMatches(c *C) {
 }
 
 func (s *PolicyAPITestSuite) TestEntitySliceMatches(c *C) {
-	InitEntities("cluster1", false)
+	InitEntities("cluster1", false, nil)
 
 	slice := EntitySlice{EntityHost, EntityWorld}
 	c.Assert(slice.matches(labels.ParseLabelArray("reserved:host")), Equals, true)
@@ -125,7 +125,7 @@ func (s *PolicyAPITestSuite) TestEntityHostAllowsRemoteNode(c *C) {
 	}
 
 	for _, tt := range tests {
-		InitEntities("cluster1", tt.treatRemoteNodeAsHost)
+		InitEntities("cluster1", tt.treatRemoteNodeAsHost, nil)
 		hostSelector := EntitySelectorMapping[EntityHost]
 		c.Assert(hostSelector.Matches(tt.expectedMatches), Equals, true, Commentf("Test Name: %s", tt.name))
 		c.Assert(hostSelector.Matches(tt.expectedNonMatches), Equals, false, Commentf("Test Name: %s", tt.name))

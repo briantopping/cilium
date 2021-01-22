@@ -430,7 +430,7 @@ func NewDaemon(ctx context.Context, epMgr *endpointmanager.EndpointManager, dp d
 
 	d.k8sWatcher.RunK8sServiceHandler()
 	treatRemoteNodeAsHost := option.Config.AlwaysAllowLocalhost() && !option.Config.EnableRemoteNodeIdentity
-	policyApi.InitEntities(option.Config.ClusterName, treatRemoteNodeAsHost)
+	policyApi.InitEntities(option.Config.ClusterName, treatRemoteNodeAsHost, option.Config.HostV4Addr)
 
 	// Start the proxy before we restore endpoints so that we can inject the
 	// daemon's proxy into each endpoint.
